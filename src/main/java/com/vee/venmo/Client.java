@@ -9,8 +9,12 @@ public class Client
       User user1 = new VenmoUser(mediator, "user1");
       User user2 = new VenmoUser(mediator, "user2");
    
-      mediator.addColleague(user1);
-      mediator.addColleague(user2);
+      try {
+    	mediator.addUser(user1);
+        mediator.addUser(user2);
+	  } catch (UserException e) {
+		e.printStackTrace();
+	  }
 
       user1.send(user2.toString(), 12.20);
       user2.send(user1.toString(),10.20);

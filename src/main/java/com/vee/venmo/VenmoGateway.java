@@ -6,18 +6,20 @@ import java.util.Map;
 
 public class VenmoGateway implements Gateway {
 	
-	Map<String,User> map = new HashMap<String,User>();
+	Map<String,User> users = new HashMap<String,User>();
 	
 	@Override
 	public void send(String source, String target, double amount) {
-		    User sourceUser = map.get(source);
-		    User targetUser = map.get(target);
+		    User sourceUser = users.get(source);
+		    User targetUser = users.get(target);
 			targetUser.receive(sourceUser,amount);
 	}
 	
 	@Override
-	public void addColleague(User user) {
-		map.put(user.name,user);
+	public void addUser(User user) throws UserException {
+		if(users.get(user.name) != null)
+			throw  new UserException();
+		users.put(user.name,user);
 	}
 
 }

@@ -18,7 +18,7 @@ public abstract class User {
 	public void setCard(String card) throws CardException {
 		boolean check = Util.validateCard(card);
 		if(!check)
-			throw new CardException();
+			throw new CardException(card);
 		this.card = card;
 	}
 	
