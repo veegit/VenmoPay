@@ -1,0 +1,9 @@
+user Thomas
+user Lisa
+user Quincy
+add Thomas 4111111111111111
+add Lisa 5454545454545454
+add Quincy 1234567890123456
+pay Thomas Lisa $10.25 burritos
+pay Thomas Quincy $10.00 you’re awesome
+pay Lisa Quincy $5.00 pot-luck supplies

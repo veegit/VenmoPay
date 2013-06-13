@@ -1,41 +1,50 @@
 package com.vee.venmo;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+
 public abstract class User {
-	private Gateway mediator;
+	private Gateway gateway;
 	private String name;
-	private String card;
-	double balance = 0;
+	private Card card;
+	protected BigDecimal balance = new BigDecimal(0);
 	
 	User(Gateway m, String name) {
-		this.mediator = m;
+		this.gateway = m;
 		this.name = name;
 	}
+	
+	/*
+	 * BEGIN getters
+	 */
 	public String getName() {
 		return name;
 	}
 	
-	public String getCard() {
+	public Card getCard() {
 		return card;
 	}
 
-	public void setCard(String card) throws CardException {
-		boolean check = Util.validateCard(card);
-		if(!check)
-			throw new CardException(card);
+	Gateway getgateway() {
+		return gateway;
+	}
+	
+	public BigDecimal getBalance() {
+		return balance;
+	}
+	/*
+	 * END getters
+	 */
+	
+	public void setCard(Card card) {
 		this.card = card;
 	}
 	
-	public double getBalance() {
-		return balance;
+	void send(String target, String amount) throws ParseException {
+		gateway.send(name, target, amount);
 	}
 	
-	void send(String target, double amount) {
-		mediator.send(name, target, amount);
-	}
+	abstract void acknowledge(Payment payment);
 	
-	Gateway getMediator() {
-		return mediator;
-	}
-	
-	abstract void receive(User source, double amount);
+	abstract boolean receive(Payment payment);
 }

@@ -1,6 +1,13 @@
 package com.vee.venmo;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class Util {
+	
+	public final static NumberFormat CURRENCY_FORMAT = 
+		NumberFormat.getCurrencyInstance(Locale.US);
+	
 	public static boolean validateCard(String card)
     {
             int sum = 0;
