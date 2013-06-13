@@ -17,9 +17,9 @@ public class VenmoGateway implements Gateway {
 	
 	@Override
 	public void addUser(User user) throws UserException {
-		if(users.get(user.name) != null)
+		if(users.get(user.getName()) != null)
 			throw  new UserException();
-		users.put(user.name,user);
+		users.put(user.getName(),user);
 	}
 
 }

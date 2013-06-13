@@ -18,7 +18,7 @@ public class VenmoUser extends User {
 
 	@Override
 	public String toString() {
-		return name;
+		return super.getName();
 	}
 
 }

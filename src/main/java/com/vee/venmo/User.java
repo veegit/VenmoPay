@@ -1,14 +1,17 @@
 package com.vee.venmo;
 
 public abstract class User {
-	Gateway mediator;
-	String name;
-	String card;
+	private Gateway mediator;
+	private String name;
+	private String card;
 	double balance = 0;
 	
 	User(Gateway m, String name) {
 		this.mediator = m;
 		this.name = name;
+	}
+	public String getName() {
+		return name;
 	}
 	
 	public String getCard() {
