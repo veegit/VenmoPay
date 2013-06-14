@@ -16,17 +16,26 @@ public class VenmoGateway implements Gateway {
 	Map<String,User> users = new HashMap<String,User>();
 	Map<Card,User> cards = new HashMap<Card, User>();
 	
-	public void send(String source, String target, String amountString) throws ParseException {
-		    User sourceUser = users.get(source);
-		    User targetUser = users.get(target);
-		    Number n = Util.CURRENCY_FORMAT.parse(amountString);
-		    BigDecimal unroundedAmount = new BigDecimal(n.doubleValue());
-		    BigDecimal amount = unroundedAmount.setScale(
-		    		Util.CURRENCY_FORMAT.getMaximumFractionDigits(),
-		            BigDecimal.ROUND_HALF_UP);  
-		    Payment payment = new Payment(sourceUser, targetUser, amount );
-		    if(targetUser.receive(payment))
-		    	sourceUser.acknowledge(payment);			
+	public void send(String source, String target, String amountString) 
+					throws CardException, UserException, ParseException {
+	    send(source, target, amountString,"");			
+	}
+	
+	public void send(String source, String target, String amountString, String message) 
+					throws CardException, UserException, ParseException {
+		userDoesntExist(source);
+		userDoesntExist(target);
+		User sourceUser = users.get(source);
+		User targetUser = users.get(target);
+		hasNoCard(sourceUser);
+		Number n = Util.CURRENCY_FORMAT.parse(amountString);
+		BigDecimal unroundedAmount = new BigDecimal(n.doubleValue());
+		BigDecimal amount = unroundedAmount.setScale(
+		 		Util.CURRENCY_FORMAT.getMaximumFractionDigits(),
+		        BigDecimal.ROUND_HALF_UP);  
+		Payment payment = new Payment(sourceUser, targetUser, amount, message );
+		if(targetUser.receive(payment))
+		  	sourceUser.acknowledge(payment);			
 	}
 	
 	public void registerUser(User user) throws UserException {
@@ -34,16 +43,25 @@ public class VenmoGateway implements Gateway {
 		users.put(user.getName(),user);
 	}
 	
-	public void registerCard(String user,String cardNumber) throws CardException, UserException {
+	public void registerCard(String userName,String cardNumber) throws CardException, UserException {
 		if(!Util.validateCard(cardNumber))
 			throw new CardException(cardNumber,CARD_ERROR.INVALID_CARD_ERROR);
-		else if(cards.get(cardNumber) != null)
-			throw new CardException(cardNumber,CARD_ERROR.CARD_SECURITY_ERROR);
 		else {
-			userDoesntExist(user);
 			Card card = new Card(cardNumber);
-			cards.put(card,users.get(user));
+			if(cards.get(card) != null)
+				throw new CardException(cardNumber,CARD_ERROR.CARD_SECURITY_ERROR);
+			else {
+				userDoesntExist(userName);
+				User user = users.get(userName);
+				user.setCard(card);
+				cards.put(card,user);
+			}
 		}
+	}
+	
+	public User getUser(String userName) throws UserException {
+		userDoesntExist(userName);
+		return users.get(userName);
 	}
 	
 	private void userExists(String user) throws UserException {
@@ -54,5 +72,10 @@ public class VenmoGateway implements Gateway {
 	private void userDoesntExist(String user) throws UserException {
 		if(users.get(user) == null)
 			throw new UserException(USER_ERROR.USER_DOESNT_EXIST);
+	}
+	
+	private void hasNoCard(User user) throws UserException {
+		if(user.getCard() == null)
+			throw new UserException(USER_ERROR.USER_HASNO_CARD);
 	}
 }

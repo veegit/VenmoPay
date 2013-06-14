@@ -4,15 +4,16 @@ import java.math.BigDecimal;
 
 public class Payment {
 	
-	//TODO add a message field
 	private User from;
 	private User to;
 	private BigDecimal amount;
+	private String message;
 	
-	Payment(User from, User to, BigDecimal amount) {
+	Payment(User from, User to, BigDecimal amount,String message) {
 		this.from = from;
 		this.to = to;
 		this.amount = amount;
+		this.message = message;
 	}
 	
 	public User getFrom() {
@@ -25,5 +26,9 @@ public class Payment {
 
 	public BigDecimal getAmount() {
 		return amount;
+	}
+	
+	public String getMessage() {
+		return message;
 	}
 }

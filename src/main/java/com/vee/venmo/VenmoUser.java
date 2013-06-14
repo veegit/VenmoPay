@@ -2,26 +2,20 @@ package com.vee.venmo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class VenmoUser extends User {
 
-	List<Payment> payments = new ArrayList<Payment>();
+	private List<Payment> payments = new ArrayList<Payment>();
 	
 	VenmoUser(Gateway m, String name) {
 		super(m, name);
 	}
 	
-	//TODO Make an iterator
-	void getPaymentFeed() {
-		for(Payment payment: payments) {
-			if(payment.getFrom() == this)
-				System.out.println("You paid " + payment.getTo() + " " + 
-						Util.CURRENCY_FORMAT.format(payment.getAmount()));
-			else
-				System.out.println(payment.getTo() + " paid you " + 
-						Util.CURRENCY_FORMAT.format(payment.getAmount()));
-		}
+	
+	public Iterator<Payment> getPayments() {
+		return payments.iterator();
 	}
 
 	private void incrementBalance(BigDecimal amount) {
@@ -32,8 +26,6 @@ public class VenmoUser extends User {
 	synchronized boolean receive(Payment payment) {
 		incrementBalance(payment.getAmount());
 		payments.add(payment);
-		System.out.println(this + ": Received from " + payment.getFrom() 
-				+ " $" + payment.getAmount());
 		return true;
 	}
 	
