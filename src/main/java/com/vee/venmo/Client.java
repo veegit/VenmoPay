@@ -1,7 +1,5 @@
 package com.vee.venmo;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -33,48 +31,12 @@ public class Client {
 	 client.parseInput();
   }
   
-  void test() {
-	  
-      User user1 = new VenmoUser(gateway, "user1");
-      User user2 = new VenmoUser(gateway, "user2");
-      User user3 = new VenmoUser(gateway, "user2");
-   
-      try {
-    	gateway.registerUser(user1);
-        gateway.registerUser(user2);
-	  } catch (UserException e) {
-		e.printStackTrace();
-	  }
-
-      try {
-		user1.send(user2.toString(), "$12.20", "blah");
-		user2.send(user1.toString(), "$10.20", "blah");
-	    //user2.send(user1.toString(),"$10");
-      } catch (ParseException e) {
-		e.printStackTrace();
-      }
-      	catch (CardException e) {
-		e.printStackTrace();
-      } catch (UserException e) {
-		e.printStackTrace();
-	  }
-     
-      //((VenmoUser) user2).getPaymentFeed();
-      System.out.println(user1.getBalance());
-  }
-  
   void parseInput() {
 	  parseInput(true);
   }
   
   void parseInput(boolean echo) {
-	  Scanner scanner=null;
-	try {
-		scanner = new Scanner(new File("sampleinput.txt"));
-	} catch (FileNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+	  Scanner scanner=new Scanner(System.in);
 	  while(scanner.hasNextLine()) {
 		String input = scanner.nextLine();
 		if(echo)

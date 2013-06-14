@@ -23,7 +23,7 @@ public class VenmoPayCardValidatorTest {
 	}
 	
 	@Test
-	public void testRegisterCard1() {
+	public void testAddCard() {
 	    try {
 	    	User user = new VenmoUser(gateway, username);
 	    	gateway.registerUser(user);
@@ -36,7 +36,7 @@ public class VenmoPayCardValidatorTest {
 	}
 	
 	@Test
-	public void testRegisterCard2()  {
+	public void testInvalidCard()  {
 		try {
 	    	User user = new VenmoUser(gateway, username);
 	    	gateway.registerUser(user);
@@ -50,7 +50,7 @@ public class VenmoPayCardValidatorTest {
 	}
 	
 	@Test
-	public void testRegisterCard3()  {
+	public void testDuplicateCard()  {
 		try {
 	    	User user = new VenmoUser(gateway, username);
 	    	gateway.registerUser(user);
@@ -65,20 +65,5 @@ public class VenmoPayCardValidatorTest {
 			assertEquals(e.getError(), CARD_ERROR.CARD_SECURITY_ERROR);
 		}
 	}
-	
-	@Test
-	public void testInvalidUsername()  {
-        String username1 = "abc$%^%%";
-	    User user =null;
-	    try {
-			user = new VenmoUser(gateway, username1);
-			gateway.registerUser(user);
-			gateway.registerCard(username,"1234567890123456");
-			fail("This should yield exception");
-		} catch (UserException e) {
-			assertEquals(e.getError(),USER_ERROR.INVALID_USERNAME);
-		} catch (CardException e) {
-			fail(e.getMessage());
-		}
-	}
+
 }

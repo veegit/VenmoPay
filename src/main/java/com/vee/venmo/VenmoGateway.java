@@ -58,7 +58,7 @@ public class VenmoGateway implements Gateway {
 			else {
 				userDoesntExist(userName);
 				User user = users.get(userName);
-				user.setCard(card);
+				user.addCard(card);
 				cards.put(card,user);
 			}
 		}
@@ -80,7 +80,7 @@ public class VenmoGateway implements Gateway {
 	}
 	
 	private void hasNoCard(User user) throws UserException {
-		if(user.getCard() == null)
+		if(!user.hasAValidCard())
 			throw new UserException(USER_ERROR.USER_HASNO_CARD);
 	}
 	

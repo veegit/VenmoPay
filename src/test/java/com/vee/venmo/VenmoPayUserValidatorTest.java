@@ -19,19 +19,19 @@ public class VenmoPayUserValidatorTest {
 	}
 	
 	@Test
-	public void testRegisterUser1() {
+	public void testAddUser() {
 	    String username1 = "abc";
 	    try {
 	    	User user = new VenmoUser(gateway, username1);
 			gateway.registerUser(user);
 			assertNotNull("User Exists",gateway.getUser(username1));
 		} catch (UserException e) {
-				
+			fail(e.getMessage());
 		}
 	}
 	
 	@Test
-	public void testRegisterUser2()  {
+	public void testInvalidUser()  {
         String username1 = "abc";
 	    String username2 = "xyz";
 	    User user =null;

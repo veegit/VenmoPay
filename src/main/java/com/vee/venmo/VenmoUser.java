@@ -11,6 +11,7 @@ public class VenmoUser extends User {
 	
 	VenmoUser(Gateway m, String name) {
 		super(m, name);
+		cards = new ArrayList<Card>();
 	}
 	
 	
