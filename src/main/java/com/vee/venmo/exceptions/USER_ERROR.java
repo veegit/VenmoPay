@@ -4,6 +4,7 @@ public enum USER_ERROR {
 	USER_EXISTS ("This user already exists."),
 	USER_DOESNT_EXIST ("No such user."),
 	USER_HASNO_CARD ("This user does not have a credit card."),
+	INVALID_USERNAME ("The username is invalid")
 	;
 	
 	private final String errorMessage;

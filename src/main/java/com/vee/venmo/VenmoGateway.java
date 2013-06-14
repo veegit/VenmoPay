@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.vee.venmo.exceptions.CARD_ERROR;
 import com.vee.venmo.exceptions.CardException;
@@ -13,8 +14,11 @@ import com.vee.venmo.exceptions.UserException;
 
 public class VenmoGateway implements Gateway {
 	
-	Map<String,User> users = new HashMap<String,User>();
-	Map<Card,User> cards = new HashMap<Card, User>();
+	public static final String usernameRegex = "[a-zA-Z0-9_\\-]+";
+	public static final Pattern userPattern = 
+		  Pattern.compile(VenmoGateway.usernameRegex);
+	private Map<String,User> users = new HashMap<String,User>();
+	private Map<Card,User> cards = new HashMap<Card, User>();
 	
 	public void send(String source, String target, String amountString) 
 					throws CardException, UserException, ParseException {
@@ -39,6 +43,7 @@ public class VenmoGateway implements Gateway {
 	}
 	
 	public void registerUser(User user) throws UserException {
+		invalidUserName(user.getName());
 		userExists(user.getName());
 		users.put(user.getName(),user);
 	}
@@ -77,5 +82,10 @@ public class VenmoGateway implements Gateway {
 	private void hasNoCard(User user) throws UserException {
 		if(user.getCard() == null)
 			throw new UserException(USER_ERROR.USER_HASNO_CARD);
+	}
+	
+	private void invalidUserName(String name) throws UserException {
+		if(!userPattern.matcher(name).matches())
+			throw new UserException(USER_ERROR.INVALID_USERNAME);
 	}
 }

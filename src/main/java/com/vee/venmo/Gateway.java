@@ -12,4 +12,5 @@ public interface Gateway {
 					throws CardException, UserException, ParseException;
 	public void registerUser(User user) throws UserException;
 	public void registerCard(String user,String cardNumber) throws CardException, UserException;
+	public User getUser(String userName) throws UserException;
 }

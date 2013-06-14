@@ -1,5 +1,7 @@
 package com.vee.venmo;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -11,17 +13,17 @@ import com.vee.venmo.exceptions.UserException;
 
 public class Client {
   
-  private static final String usernameRegex = "[a-zA-Z0-9_\\-]+";
-  private static final Pattern userPattern = 
-	  Pattern.compile(String.format("user\\s*(%s)$",usernameRegex)); 
+  public static final Pattern userInputPattern = 
+		  Pattern.compile(String.format("user\\s*(%s)$",VenmoGateway.usernameRegex));  
   private static final Pattern addPattern = 
-	  Pattern.compile(String.format("add\\s*(%s)\\s*(\\d+)$",usernameRegex));
+	  Pattern.compile(String.format("add\\s*(%s)\\s*(\\d+)$",VenmoGateway.usernameRegex));
   private static final Pattern payPattern = 
-	  Pattern.compile(String.format("pay\\s*(%s)\\s*(%s)\\s*(.[0-9\\.]+)(.*)$",usernameRegex,usernameRegex));
+	  Pattern.compile(String.format("pay\\s*(%s)\\s*(%s)\\s*(.[0-9\\.]+)(.*)$",
+			  VenmoGateway.usernameRegex,VenmoGateway.usernameRegex));
   private static final Pattern feedPattern = 
-	  Pattern.compile(String.format("feed\\s*(%s)$",usernameRegex));
+	  Pattern.compile(String.format("feed\\s*(%s)$",VenmoGateway.usernameRegex));
   private static final Pattern balancePattern = 
-	  Pattern.compile(String.format("balance\\s*(%s)$",usernameRegex));
+	  Pattern.compile(String.format("balance\\s*(%s)$",VenmoGateway.usernameRegex));
   
   Gateway gateway = new VenmoGateway(); 
   
@@ -62,16 +64,22 @@ public class Client {
   }
   
   void parseInput() {
-	  parseInput(false);
+	  parseInput(true);
   }
   
   void parseInput(boolean echo) {
-	  Scanner scanner = new Scanner(System.in);
+	  Scanner scanner=null;
+	try {
+		scanner = new Scanner(new File("sampleinput.txt"));
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	  while(scanner.hasNextLine()) {
 		String input = scanner.nextLine();
 		if(echo)
 			System.out.println("> " + input);
-		Matcher userMatcher = userPattern.matcher(input);
+		Matcher userMatcher = userInputPattern.matcher(input);
 		Matcher addMatcher = addPattern.matcher(input);
 		Matcher payMatcher = payPattern.matcher(input);
 		Matcher feedMatcher = feedPattern.matcher(input);
@@ -92,7 +100,7 @@ public class Client {
 	}
   }
   
-  void addUser(String u) {
+  public void addUser(String u) {
 	  User user = new VenmoUser(gateway, u);
 	  try {
 		gateway.registerUser(user);
@@ -101,7 +109,7 @@ public class Client {
 	}
   }
   
-  void addCard(String u, String c) {
+  public void addCard(String u, String c) {
 	  try {
 		gateway.registerCard(u, c);
 	} catch (CardException e) {
@@ -111,9 +119,9 @@ public class Client {
 	}
   }
   
-  void addPayment(String u1, String u2, String amount, String msg) {
+  public void addPayment(String u1, String u2, String amount, String msg) {
 	try {
-		User user1 = ((VenmoGateway) gateway).getUser(u1);
+		User user1 = gateway.getUser(u1);
 		user1.send(u2, amount, msg.trim());
 	} catch (ParseException e) {
 		System.out.println(e.getMessage());
@@ -124,9 +132,9 @@ public class Client {
 	}
   }
   
-  void getFeed(String u1) {
+  public void getFeed(String u1) {
 	try {
-		User user = ((VenmoGateway) gateway).getUser(u1);
+		User user = gateway.getUser(u1);
 		Iterator<Payment> payments = ((VenmoUser) user).getPayments();
 		while(payments.hasNext()) {
 		  Payment payment = payments.next();
@@ -144,9 +152,9 @@ public class Client {
 	}
   }
   
-  void getBalance(String u1) {
+  public void getBalance(String u1) {
 	  try {
-		  User user	= ((VenmoGateway) gateway).getUser(u1);
+		  User user	= gateway.getUser(u1);
 		  System.out.println("-- " + Util.CURRENCY_FORMAT.format(user.getBalance()));
 		} catch (UserException e) {
 			System.out.println(e.getMessage());
